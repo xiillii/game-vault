@@ -1,6 +1,6 @@
 # SPEC 01 — Arcade Vault MVP visual shell
 
-> **Status:** Draft
+> **Status:** Approved
 > **Depends on:** —
 > **Date:** 2026-07-22
 > **Objective:** Port the static Arcade Vault HTML/React prototype (references/templates/) into a Next.js App Router MVP with five real routes, reusing the existing mock data and localStorage persistence, with no real gameplay logic.
