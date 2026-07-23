@@ -11,6 +11,12 @@ https://github.com/Klerith/fernando-skills
 
 ## Skills usadas
 
+- Instalada en el proyecto
 ```bash
 npx skills@latest add Klerith/fernando-skills
+```
+
+- Instalada en el global
+``` bash
+npx skills add https://github.com/anthropics/skills --skill frontend-design
 ```
