@@ -1,6 +1,6 @@
 # SPEC 03 — About page + envío de contacto
 
-> **Status:** Draft
+> **Status:** Aprobado
 > **Depends on:** SPEC 02
 > **Date:** 2026-07-23
 > **Objective:** Portar la página About/Contacto (`references/templates/home-about/about.jsx`) a `app/about/page.tsx` con formulario funcional que envía correos vía Resend o Gmail API según configuración.
