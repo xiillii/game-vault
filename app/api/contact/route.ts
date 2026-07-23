@@ -34,7 +34,11 @@ export async function POST(request: Request) {
   const result = await sendContactEmail({ name: name.trim(), email: email.trim(), msg: msg.trim() });
 
   if (!result.ok) {
-    return Response.json({ ok: false, error: result.error }, { status: 500 });
+    console.error("[api/contact] sendContactEmail failed:", result.error);
+    return Response.json(
+      { ok: false, error: "No se pudo enviar el mensaje. Intenta de nuevo más tarde o contacte al Administrador." },
+      { status: 500 }
+    );
   }
 
   return Response.json({ ok: true });
