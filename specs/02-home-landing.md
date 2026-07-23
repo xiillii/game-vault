@@ -1,6 +1,6 @@
 # SPEC 02 — Home page landing
 
-> **Status:** Draft
+> **Status:** Aprobado
 > **Depends on:** SPEC 01
 > **Date:** 2026-07-23
 > **Objective:** Replace the current "/" library screen with the hero-driven landing page ported from references/templates/home-about/home.jsx, moving the existing library grid to /biblioteca and adding an "Inicio" link to Nav.
