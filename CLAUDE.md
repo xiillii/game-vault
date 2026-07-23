@@ -28,6 +28,10 @@ npm run lint     # eslint (flat config, eslint.config.mjs)
 
 No test framework is configured yet.
 
+## Skills
+
+Always use /frontend-design to design the user interface.
+
 ## Architecture
 
 - **App Router** (`app/`) with TypeScript, `app/layout.tsx` as the root layout and `app/page.tsx` as the home route.
