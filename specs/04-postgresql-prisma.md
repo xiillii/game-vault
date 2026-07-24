@@ -1,6 +1,6 @@
 # SPEC 04 — Integración PostgreSQL con Prisma
 
-> **Status:** Draft
+> **Status:** Aprobado
 > **Depends on:** SPEC 03
 > **Date:** 2026-07-23
 > **Objective:** Agregar el cliente Prisma conectado a un servidor PostgreSQL corriendo en un contenedor Docker local, dejando el esquema vacío (sin tablas) y un singleton reutilizable para Server Components/Route Handlers.
