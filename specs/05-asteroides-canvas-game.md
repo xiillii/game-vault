@@ -1,6 +1,6 @@
 # SPEC 05 — Asteroides: primer juego real (canvas)
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 01
 > **Date:** 2026-07-23
 > **Objective:** Integrar el juego Asteroides (references/started-games/02-asteroids/game.js) como el primer juego real de la biblioteca, portado a un componente canvas de React controlado por la app — puntaje/vidas/nivel/pausa/fin viven en React, el canvas solo renderiza física y gráficos y notifica cambios vía callbacks.
@@ -105,19 +105,19 @@ Conventions:
 
 ## Acceptance criteria
 
-- [ ] `/` muestra una tarjeta "ASTEROIDES" (categoría SHOOTER) en la biblioteca, separada de "ROCAS", que enlaza a `/game/asteroides`.
-- [ ] `/game/asteroides` muestra el detalle del juego (portada `cover-rocas`, copy, leaderboard placeholder) igual que cualquier otro juego.
-- [ ] `/game/asteroides/play` renderiza el canvas real dentro de `.crt-screen`, llenando el marco, sin el `.game-arena` falso.
-- [ ] Flechas izquierda/derecha rotan la nave, flecha arriba propulsa, espacio dispara — igual que el juego original.
-- [ ] El HUD superior de React (PUNTUACIÓN, VIDAS, NIVEL) se actualiza en tiempo real conforme se destruyen asteroides, se pierden vidas y se completan niveles; el canvas no dibuja su propio texto de score/vidas/nivel.
-- [ ] Al perder las 3 vidas, el motor se detiene solo y aparece el modal "FIN DEL JUEGO" con el score final correcto, sin necesidad de pulsar "FIN".
-- [ ] Pulsar "PAUSA" congela el movimiento de la nave/asteroides/balas (el canvas se queda quieto en el último frame); "REANUDAR" continúa exactamente donde quedó.
-- [ ] Pulsar "FIN" durante una partida activa detiene el juego de inmediato y abre el modal con el score acumulado hasta ese momento.
-- [ ] Guardar la puntuación en el modal (`GUARDAR PUNTUACIÓN`) sigue escribiendo en `localStorage["av_scores"]` sin cambios respecto al flujo actual.
-- [ ] "JUGAR DE NUEVO" reinicia la partida desde cero: nave centrada, score 0, vidas 3, nivel 1, sin residuos del intento anterior (asteroides/balas/partículas viejas).
-- [ ] "SALIR" navega de vuelta a `/game/asteroides` sin dejar el loop del canvas corriendo en segundo plano (verificar sin errores en consola tras salir).
-- [ ] Otros juegos de la biblioteca (`bloque-buster`, `caida`, `serpentina`, `gloton`, `invasores`, `rocas`, `ranaria`, `duelo-pixel`) siguen mostrando el arena falso en `/game/[id]/play` sin cambios de comportamiento.
-- [ ] `npm run build` y `npm run lint` pasan sin errores nuevos.
+- [X] `/` muestra una tarjeta "ASTEROIDES" (categoría SHOOTER) en la biblioteca, separada de "ROCAS", que enlaza a `/game/asteroides`.
+- [X] `/game/asteroides` muestra el detalle del juego (portada `cover-rocas`, copy, leaderboard placeholder) igual que cualquier otro juego.
+- [X] `/game/asteroides/play` renderiza el canvas real dentro de `.crt-screen`, llenando el marco, sin el `.game-arena` falso.
+- [X] Flechas izquierda/derecha rotan la nave, flecha arriba propulsa, espacio dispara — igual que el juego original.
+- [X] El HUD superior de React (PUNTUACIÓN, VIDAS, NIVEL) se actualiza en tiempo real conforme se destruyen asteroides, se pierden vidas y se completan niveles; el canvas no dibXja su propio texto de score/vidas/nivel.
+- [X] Al perder las 3 vidas, el motor se detiene solo y aparece el modal "FIN DEL JUEGO" con el score final correcto, sin necesidad de pulsar "FIN".
+- [X] Pulsar "PAUSA" congela el movimiento de la nave/asteroides/balas (el canvas se queda quieto en el último frame); "REANUDAR" continúa exactamente donde quedó.
+- [X] Pulsar "FIN" durante una partida activa detiene el juego de inmediato y abre el modal con el score acumulado hasta ese momento.
+- [X] Guardar la puntuación en el modal (`GUARDAR PUNTUACIÓN`) sigue escribiendo en `localStorage["av_scores"]` sin cambios respecto al flujo actual.
+- [X] "JUGAR DE NUEVO" reinicia la partida desde cero: nave centrada, score 0, vidas 3, nivel 1, sin residuos del intento anterior (asteroides/balas/partículas viejas).
+- [X] "SALIR" navega de vuelta a `/game/asteroides` sin dejar el loop del canvas corriendo en segundo plano (verificar sin errores en consola tras salir).
+- [X] Otros juegos de la biblioteca (`bloque-buster`, `caida`, `serpentina`, `gloton`, `invasores`, `rocas`, `ranaria`, `duelo-pixel`) siguen mostrando el arena falso en `/gamX/[id]/play` sin cambios de comportamiento.
+- [X] `npm run build` y `npm run lint` pasan sin errores nuevos.
 
 ## Decisions
 
