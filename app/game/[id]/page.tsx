@@ -20,8 +20,6 @@ export default function GameDetailPage() {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    setGame(null);
-    setNotFound(false);
     fetch(`/api/games/${id}`).then(async (res) => {
       if (!res.ok) {
         setNotFound(true);

@@ -55,7 +55,6 @@ export default function HallOfFamePage() {
 
   useEffect(() => {
     if (!tab) return;
-    setGameDetail(null);
     fetch(`/api/games/${tab}`)
       .then((r) => r.json())
       .then(setGameDetail);
