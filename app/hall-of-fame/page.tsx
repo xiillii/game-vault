@@ -1,15 +1,36 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { GAMES, seededScores } from "@/lib/data";
+import type { Game } from "@/lib/data";
 
 interface AvUser {
   name: string;
 }
 
+interface GameDetail extends Game {
+  leaderboard: {
+    rank: number;
+    nickname: string;
+    score: number;
+    createdAt: string;
+  }[];
+}
+
+interface HallOfFameRow {
+  rank: number;
+  nickname: string;
+  gameId: string;
+  gameTitle: string;
+  score: number;
+  createdAt: string;
+}
+
 export default function HallOfFamePage() {
-  const [tab, setTab] = useState(GAMES[0].id);
+  const [games, setGames] = useState<Game[]>([]);
+  const [tab, setTab] = useState<string | null>(null);
+  const [gameDetail, setGameDetail] = useState<GameDetail | null>(null);
+  const [hallOfFame, setHallOfFame] = useState<HallOfFameRow[]>([]);
   const [user, setUser] = useState<AvUser | null>(null);
 
   useEffect(() => {
@@ -20,10 +41,28 @@ export default function HallOfFamePage() {
     }
   }, []);
 
-  const rows = useMemo(() => seededScores(tab.length * 23 + 7, 12), [tab]);
-  const game = GAMES.find((g) => g.id === tab)!;
-  const youRank = user ? Math.floor(8 + (tab.length % 4)) : null;
-  const youScore = user ? rows[5]?.score - 2400 : null;
+  useEffect(() => {
+    fetch("/api/games")
+      .then((r) => r.json())
+      .then((data: Game[]) => {
+        setGames(data);
+        setTab((current) => current ?? data[0]?.id ?? null);
+      });
+    fetch("/api/hall-of-fame")
+      .then((r) => r.json())
+      .then(setHallOfFame);
+  }, []);
+
+  useEffect(() => {
+    if (!tab) return;
+    fetch(`/api/games/${tab}`)
+      .then((r) => r.json())
+      .then(setGameDetail);
+  }, [tab]);
+
+  const game = games.find((g) => g.id === tab) ?? null;
+  const youRank = user && tab ? Math.floor(8 + (tab.length % 4)) : null;
+  const youScore = user && tab ? 96000 - tab.length * 1200 : null;
 
   return (
     <main className="av-main av-hall fade-in">
@@ -35,7 +74,7 @@ export default function HallOfFamePage() {
       </div>
 
       <div className="hall-tabs">
-        {GAMES.map((g) => (
+        {games.map((g) => (
           <button
             key={g.id}
             className={"chip" + (tab === g.id ? " active" : "")}
@@ -46,33 +85,66 @@ export default function HallOfFamePage() {
         ))}
       </div>
 
-      <div className="podium">
-        <div className="podium-slot silver">
-          <div className="rank-num">02</div>
-          <div className="name">{rows[1].name}</div>
-          <div className="score">{rows[1].score.toLocaleString("es-ES")}</div>
-          <div className="date">{rows[1].date}</div>
+      {hallOfFame.length === 0 ? (
+        <div
+          style={{
+            textAlign: "center",
+            padding: 40,
+            color: "var(--ink-faint)",
+          }}
+        >
+          AÚN SIN PUNTUACIONES
         </div>
-        <div className="podium-slot gold">
-          <div className="pixel" style={{ fontSize: 9, color: "var(--gold)", letterSpacing: "0.18em" }}>
-            CAMPEÓN
+      ) : (
+        <div className="podium">
+          {hallOfFame[1] && (
+            <div className="podium-slot silver">
+              <div className="rank-num">02</div>
+              <div className="name">{hallOfFame[1].nickname}</div>
+              <div className="score">
+                {hallOfFame[1].score.toLocaleString("es-ES")}
+              </div>
+              <div className="date">
+                {new Date(hallOfFame[1].createdAt).toLocaleDateString("es-ES")}
+              </div>
+            </div>
+          )}
+          <div className="podium-slot gold">
+            <div
+              className="pixel"
+              style={{
+                fontSize: 9,
+                color: "var(--gold)",
+                letterSpacing: "0.18em",
+              }}
+            >
+              CAMPEÓN
+            </div>
+            <div className="rank-num" style={{ fontSize: 36, marginTop: 4 }}>
+              01
+            </div>
+            <div className="name">{hallOfFame[0].nickname}</div>
+            <div className="score" style={{ fontSize: 20 }}>
+              {hallOfFame[0].score.toLocaleString("es-ES")}
+            </div>
+            <div className="date">
+              {new Date(hallOfFame[0].createdAt).toLocaleDateString("es-ES")}
+            </div>
           </div>
-          <div className="rank-num" style={{ fontSize: 36, marginTop: 4 }}>
-            01
-          </div>
-          <div className="name">{rows[0].name}</div>
-          <div className="score" style={{ fontSize: 20 }}>
-            {rows[0].score.toLocaleString("es-ES")}
-          </div>
-          <div className="date">{rows[0].date}</div>
+          {hallOfFame[2] && (
+            <div className="podium-slot bronze">
+              <div className="rank-num">03</div>
+              <div className="name">{hallOfFame[2].nickname}</div>
+              <div className="score">
+                {hallOfFame[2].score.toLocaleString("es-ES")}
+              </div>
+              <div className="date">
+                {new Date(hallOfFame[2].createdAt).toLocaleDateString("es-ES")}
+              </div>
+            </div>
+          )}
         </div>
-        <div className="podium-slot bronze">
-          <div className="rank-num">03</div>
-          <div className="name">{rows[2].name}</div>
-          <div className="score">{rows[2].score.toLocaleString("es-ES")}</div>
-          <div className="date">{rows[2].date}</div>
-        </div>
-      </div>
+      )}
 
       <div className="hall-table">
         <div className="th">
@@ -81,22 +153,44 @@ export default function HallOfFamePage() {
           <div>PUNTUACIÓN</div>
           <div>FECHA</div>
         </div>
-        {rows.map((r, i) => (
+        {(gameDetail?.leaderboard.length ?? 0) === 0 ? (
           <div
-            key={r.name + i}
-            className={"tr" + (i === 0 ? " top1" : i === 1 ? " top2" : i === 2 ? " top3" : "")}
-            style={{ animationDelay: `${i * 50}ms` }}
+            style={{
+              textAlign: "center",
+              padding: 24,
+              color: "var(--ink-faint)",
+            }}
           >
-            <div className="rk">#{String(r.rank).padStart(2, "0")}</div>
-            <div className="pl">{r.name}</div>
-            <div className="sc">{r.score.toLocaleString("es-ES")}</div>
-            <div className="dt">{r.date}</div>
+            AÚN SIN PUNTUACIONES
           </div>
-        ))}
-        {user && (
+        ) : (
+          gameDetail!.leaderboard.map((r, i) => (
+            <div
+              key={r.nickname + i}
+              className={
+                "tr" +
+                (i === 0 ? " top1" : i === 1 ? " top2" : i === 2 ? " top3" : "")
+              }
+              style={{ animationDelay: `${i * 50}ms` }}
+            >
+              <div className="rk">#{String(r.rank).padStart(2, "0")}</div>
+              <div className="pl">{r.nickname}</div>
+              <div className="sc">{r.score.toLocaleString("es-ES")}</div>
+              <div className="dt">
+                {new Date(r.createdAt).toLocaleDateString("es-ES")}
+              </div>
+            </div>
+          ))
+        )}
+        {user && game && (
           <>
             <div className="tr you-label">▸ TU MEJOR MARCA EN {game.title}</div>
-            <div className="tr you" style={{ animationDelay: `${rows.length * 50 + 50}ms` }}>
+            <div
+              className="tr you"
+              style={{
+                animationDelay: `${(gameDetail?.leaderboard.length ?? 0) * 50 + 50}ms`,
+              }}
+            >
               <div className="rk" style={{ color: "var(--yellow)" }}>
                 #{String(youRank).padStart(2, "0")}
               </div>
@@ -105,7 +199,10 @@ export default function HallOfFamePage() {
               </div>
               <div
                 className="sc"
-                style={{ color: "var(--yellow)", textShadow: "0 0 6px rgba(245,255,0,0.5)" }}
+                style={{
+                  color: "var(--yellow)",
+                  textShadow: "0 0 6px rgba(245,255,0,0.5)",
+                }}
               >
                 {(youScore || 9999).toLocaleString("es-ES")}
               </div>

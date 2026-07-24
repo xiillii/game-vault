@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { GAMES } from "@/lib/data";
+import type { Game } from "@/lib/data";
 import { GAME_COMPONENTS } from "@/components/games/registry";
 
 export default function GamePlayerPage() {
   const { id } = useParams<{ id: string }>();
-  const game = GAMES.find((g) => g.id === id);
+  const [game, setGame] = useState<Game | null>(null);
+  const [notFound, setNotFound] = useState(false);
   const RealGame = game ? GAME_COMPONENTS[game.id] : undefined;
 
   const [score, setScore] = useState(0);
@@ -18,7 +19,19 @@ export default function GamePlayerPage() {
   const [over, setOver] = useState(false);
   const [name, setName] = useState("INVITADO");
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const [runId, setRunId] = useState(0);
+
+  useEffect(() => {
+    fetch(`/api/games/${id}`).then(async (res) => {
+      if (!res.ok) {
+        setNotFound(true);
+        return;
+      }
+      setGame(await res.json());
+    });
+  }, [id]);
 
   useEffect(() => {
     try {
@@ -43,6 +56,7 @@ export default function GamePlayerPage() {
     if (score > 0 && score % 2500 < 100) setLevel((l) => l + 1);
   }, [RealGame, score]);
 
+  if (notFound) return null;
   if (!game) return null;
 
   const endGame = () => setOver(true);
@@ -53,18 +67,26 @@ export default function GamePlayerPage() {
     setPaused(false);
     setOver(false);
     setSaved(false);
+    setSaveError(false);
     setRunId((r) => r + 1);
   };
 
-  const saveScore = () => {
+  const saveScore = async () => {
+    setSaving(true);
+    setSaveError(false);
     try {
-      const all = JSON.parse(localStorage.getItem("av_scores") || "[]");
-      all.push({ game: game.id, score, name, at: Date.now() });
-      localStorage.setItem("av_scores", JSON.stringify(all));
+      const res = await fetch("/api/scores", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ gameId: game.id, nickname: name, score }),
+      });
+      if (!res.ok) throw new Error("save failed");
+      setSaved(true);
     } catch {
-      // ignore malformed localStorage value
+      setSaveError(true);
+    } finally {
+      setSaving(false);
     }
-    setSaved(true);
   };
 
   return (
@@ -170,12 +192,23 @@ export default function GamePlayerPage() {
                   }
                   placeholder="TUS INICIALES"
                 />
-                <button className="btn yellow" onClick={saveScore}>
-                  GUARDAR PUNTUACIÓN
+                <button
+                  className="btn yellow"
+                  onClick={saveScore}
+                  disabled={saving}
+                >
+                  {saving ? "GUARDANDO…" : "GUARDAR PUNTUACIÓN"}
                 </button>
               </div>
             ) : (
               <div className="toast-saved">▸ PUNTUACIÓN GUARDADA_</div>
+            )}
+            {saveError && (
+              <div
+                style={{ color: "var(--magenta)", fontSize: 12, marginTop: 8 }}
+              >
+                No se pudo guardar la puntuación. Intenta de nuevo.
+              </div>
             )}
             <div className="actions">
               <button className="btn" onClick={restart}>

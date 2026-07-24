@@ -30,7 +30,9 @@ No test framework is configured yet.
 
 ## Skills
 
-Always use /frontend-design to design the user interface.
+- Always use /frontend-design to design the user interface.
+- Always use all the skills /prisma-* to work with prisma a postgresql.
+
 
 ## Architecture
 
