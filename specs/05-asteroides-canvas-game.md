@@ -1,6 +1,6 @@
 # SPEC 05 — Asteroides: primer juego real (canvas)
 
-> **Status:** Draft
+> **Status:** Aprobado
 > **Depends on:** SPEC 01
 > **Date:** 2026-07-23
 > **Objective:** Integrar el juego Asteroides (references/started-games/02-asteroids/game.js) como el primer juego real de la biblioteca, portado a un componente canvas de React controlado por la app — puntaje/vidas/nivel/pausa/fin viven en React, el canvas solo renderiza física y gráficos y notifica cambios vía callbacks.
