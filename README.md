@@ -20,3 +20,23 @@ npx skills@latest add Klerith/fernando-skills
 ``` bash
 npx skills add https://github.com/anthropics/skills --skill frontend-design
 ```
+
+## MCP usadas en este proyecto
+
+- Playwright
+
+```bash
+claude mcp add playwright npx @playwright/mcp@latest
+```
+
+- Supabase
+
+```bash
+claude mcp add --scope project --transport http supabase "http://localhost:54321/mcp"
+```
+
+- PostgreSQL
+
+```bash
+claude mcp add postgres -- npx -y @modelcontextprotocol/server-postgres "postgresql://usuario:password@localhost:5432/mibase"
+```
