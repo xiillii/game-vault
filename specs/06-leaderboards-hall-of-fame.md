@@ -1,6 +1,6 @@
 # SPEC 06 — Leaderboards, Salón de la Fama y catálogo de juegos persistidos
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 04, SPEC 05
 > **Date:** 2026-07-23
 > **Objective:** Persistir el catálogo de juegos y las puntuaciones en PostgreSQL vía Prisma (reemplazando `lib/data.ts` hardcodeado y `localStorage["av_scores"]`), exponer el Top N por juego, el Top global del Salón de la Fama y las secciones de la home conectadas a esos mismos datos, todo leído en tiempo de solicitud (sin caché) desde Route Handlers.
@@ -176,22 +176,22 @@ Convenciones:
 
 ## Acceptance criteria
 
-- [ ] `prisma/schema.prisma` define `model Game` y `model Score` (según Data model), con la relación `Score.gameId → Game.id`.
-- [ ] Existe una migración (`prisma/migrations/...init_games_scores`) aplicada contra la `DATABASE_URL` de `.env`, creando ambas tablas.
-- [ ] `npx prisma db seed` inserta exactamente un `Game` (`id: "asteroides"`) de forma idempotente (correrlo dos veces no duplica ni falla).
-- [ ] `GET /api/games` responde con el/los juego(s) sembrados, incluyendo `best` y `plays` calculados (0 si no hay scores).
-- [ ] `GET /api/games/asteroides` responde con el detalle del juego y un `leaderboard` (vacío si no hay scores, máx. 12 filas con el mejor score por nickname si los hay).
-- [ ] `POST /api/scores` con un `gameId` válido y `nickname` no vacío crea un `Score` y responde 201; con `gameId` inexistente responde 404; con `nickname` vacío/solo espacios responde 400.
-- [ ] `GET /api/hall-of-fame` responde con el Top 12 global (scores individuales mezclados entre juegos, sin agrupar por nickname).
-- [ ] `GET /api/stats/home` responde con `gamesCount`, `playsCount`, `recentScores` (máx. 8) y `topToday` (máx. 6, solo scores de la fecha actual).
-- [ ] `lib/data.ts` ya no exporta `GAMES` (array hardcodeado) ni `seededScores`.
-- [ ] `/` (home) muestra en GAMES PREVIEW, STATS, y ACTIVIDAD EN VIVO (TICKER + TOP JUGADORES · HOY) datos provenientes de los endpoints anteriores, no de constantes locales.
-- [ ] `/game/asteroides` muestra `best`/`plays`/leaderboard provenientes de `GET /api/games/asteroides`.
-- [ ] Jugar una partida en `/game/asteroides/play`, guardar el score con un nickname, y confirmar (recargando la página) que ese score aparece en el leaderboard de `/game/asteroides`, en `/hall-of-fame` y en `recentScores`/`topToday` de la home.
-- [ ] `/hall-of-fame` muestra tabs generadas desde `GET /api/games`, filas por tab desde `GET /api/games/[id]`, y el podio/tabla superior desde `GET /api/hall-of-fame`; el bloque "TU MEJOR MARCA" sigue funcionando igual que hoy (aleatorio, sin cambios).
-- [ ] Con la DB recién sembrada (sin scores), todos los leaderboards/podios afectados muestran el mensaje de estado vacío correspondiente, sin romper el layout.
-- [ ] Ninguna de las páginas/actualizaciones anteriores hace polling ni se actualiza sin recargar/re-entrar a la página (confirmado dejando una pestaña abierta mientras se guarda un score desde otra).
-- [ ] `npm run build` y `npm run lint` pasan sin errores nuevos.
+- [X] `prisma/schema.prisma` define `model Game` y `model Score` (según Data model), con la relación `Score.gameId → Game.id`.
+- [X] Existe una migración (`prisma/migrations/...init_games_scores`) aplicada contra la `DATABASE_URL` de `.env`, creando ambas tablas.
+- [X] `npx prisma db seed` inserta exactamente un `Game` (`id: "asteroides"`) de forma idempotente (correrlo dos veces no duplica ni falla).
+- [X] `GET /api/games` responde con el/los juego(s) sembrados, incluyendo `best` y `plays` calculados (0 si no hay scores).
+- [X] `GET /api/games/asteroides` responde con el detalle del juego y un `leaderboard` (vacío si no hay scores, máx. 12 filas con el mejor score por nickname si los hay).
+- [X] `POST /api/scores` con un `gameId` válido y `nickname` no vacío crea un `Score` y responde 201; con `gameId` inexistente responde 404; con `nickname` vacío/solo espXcios responde 400.
+- [X] `GET /api/hall-of-fame` responde con el Top 12 global (scores individuales mezclados entre juegos, sin agrupar por nickname).
+- [X] `GET /api/stats/home` responde con `gamesCount`, `playsCount`, `recentScores` (máx. 8) y `topToday` (máx. 6, solo scores de la fecha actual).
+- [X] `lib/data.ts` ya no exporta `GAMES` (array hardcodeado) ni `seededScores`.
+- [X] `/` (home) muestra en GAMES PREVIEW, STATS, y ACTIVIDAD EN VIVO (TICKER + TOP JUGADORES · HOY) datos provenientes de los endpoints anteriores, no de constantes locales.
+- [X] `/game/asteroides` muestra `best`/`plays`/leaderboard provenientes de `GET /api/games/asteroides`.
+- [X] Jugar una partida en `/game/asteroides/play`, guardar el score con un nickname, y confirmar (recargando la página) que ese score aparece en el leaderboard de `/game/astXroides`, en `/hall-of-fame` y en `recentScores`/`topToday` de la home.
+- [X] `/hall-of-fame` muestra tabs generadas desde `GET /api/games`, filas por tab desde `GET /api/games/[id]`, y el podio/tabla superior desde `GET /api/hall-of-fame`; el bloXue "TU MEJOR MARCA" sigue funcionando igual que hoy (aleatorio, sin cambios).
+- [X] Con la DB recién sembrada (sin scores), todos los leaderboards/podios afectados muestran el mensaje de estado vacío correspondiente, sin romper el layout.
+- [X] Ninguna de las páginas/actualizaciones anteriores hace polling ni se actualiza sin recargar/re-entrar a la página (confirmado dejando una pestaña abierta mientras se guaXda un score desde otra).
+- [X] `npm run build` y `npm run lint` pasan sin errores nuevos.
 
 ## Decisions
 
