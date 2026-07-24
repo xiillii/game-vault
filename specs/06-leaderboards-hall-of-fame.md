@@ -1,6 +1,6 @@
 # SPEC 06 — Leaderboards, Salón de la Fama y catálogo de juegos persistidos
 
-> **Status:** Draft
+> **Status:** Aprobado
 > **Depends on:** SPEC 04, SPEC 05
 > **Date:** 2026-07-23
 > **Objective:** Persistir el catálogo de juegos y las puntuaciones en PostgreSQL vía Prisma (reemplazando `lib/data.ts` hardcodeado y `localStorage["av_scores"]`), exponer el Top N por juego, el Top global del Salón de la Fama y las secciones de la home conectadas a esos mismos datos, todo leído en tiempo de solicitud (sin caché) desde Route Handlers.
