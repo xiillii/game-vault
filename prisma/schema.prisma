@@ -11,3 +11,26 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Game {
+  id     String  @id
+  title  String
+  short  String
+  long   String
+  cat    String
+  cover  String
+  color  String
+  scores Score[]
+}
+
+model Score {
+  id        String   @id @default(cuid())
+  gameId    String
+  game      Game     @relation(fields: [gameId], references: [id])
+  nickname  String
+  score     Int
+  createdAt DateTime @default(now())
+
+  @@index([gameId, score])
+  @@index([createdAt])
+}
