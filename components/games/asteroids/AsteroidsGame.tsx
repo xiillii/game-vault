@@ -30,7 +30,9 @@ export default function AsteroidsGame({
     up: (e: KeyboardEvent) => void;
   } | null>(null);
 
-  pausedRef.current = paused;
+  useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
